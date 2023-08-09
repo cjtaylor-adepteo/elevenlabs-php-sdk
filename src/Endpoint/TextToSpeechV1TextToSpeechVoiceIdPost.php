@@ -24,29 +24,30 @@ class TextToSpeechV1TextToSpeechVoiceIdPost extends \ElevenLabs\V1\SDK\Runtime\C
         $this->accept = $accept;
     }
     use \ElevenLabs\V1\SDK\Runtime\Client\EndpointTrait;
-    public function getMethod() : string
+    public function getMethod(): string
     {
         return 'POST';
     }
-    public function getUri() : string
+    public function getUri(): string
     {
         return str_replace(array('{voice_id}'), array($this->voice_id), '/v1/text-to-speech/{voice_id}');
     }
-    public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null) : array
+    public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null): array
     {
         if ($this->body instanceof \ElevenLabs\V1\SDK\Model\BodyTextToSpeechV1TextToSpeechVoiceIdPost) {
             return array(array('Content-Type' => array('application/json')), $serializer->serialize($this->body, 'json'));
         }
         return array(array(), null);
     }
-    public function getExtraHeaders() : array
+    public function getExtraHeaders(): array
     {
         if (empty($this->accept)) {
-            return array('Accept' => array('audio/mpeg', 'application/json'));
+            //return array('Accept' => array('audio/mpeg', 'application/json'));
+            return array('Accept' => 'audio/mpeg');
         }
         return $this->accept;
     }
-    protected function getHeadersOptionsResolver() : \Symfony\Component\OptionsResolver\OptionsResolver
+    protected function getHeadersOptionsResolver(): \Symfony\Component\OptionsResolver\OptionsResolver
     {
         $optionsResolver = parent::getHeadersOptionsResolver();
         $optionsResolver->setDefined(array('xi-api-key'));
@@ -62,20 +63,22 @@ class TextToSpeechV1TextToSpeechVoiceIdPost extends \ElevenLabs\V1\SDK\Runtime\C
      *
      * @return string
      */
-    protected function transformResponseBody(\Psr\Http\Message\ResponseInterface $response, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null): string {
+    protected function transformResponseBody(\Psr\Http\Message\ResponseInterface $response, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null): string
+    {
         $status = $response->getStatusCode();
         $body = (string) $response->getBody();
         if (is_null($contentType) === false && (422 === $status && mb_strpos($contentType, 'application/json') !== false)) {
             throw new \ElevenLabs\V1\SDK\Exception\TextToSpeechV1TextToSpeechVoiceIdPostUnprocessableEntityException($serializer->deserialize($body, 'ElevenLabs\\V1\\SDK\\Model\\HTTPValidationError', 'json'), $response);
         }
         if (200 === $status) {
-			return $body;
-		} else {
-	        throw new \ElevenLabs\V1\SDK\Exception\TextToSpeechV1TextToSpeechVoiceIdPostUnprocessableEntityException($serializer->deserialize($body, 'ElevenLabs\\V1\\SDK\\Model\\HTTPValidationError', 'json'), $response);
+            return $body;
+        } else {
+            throw new \ElevenLabs\V1\SDK\Exception\TextToSpeechV1TextToSpeechVoiceIdPostUnprocessableEntityException($serializer->deserialize($body, 'ElevenLabs\\V1\\SDK\\Model\\HTTPValidationError', 'json'), $response);
         }
     }
-    public function getAuthenticationScopes() : array
+    public function getAuthenticationScopes(): array
     {
         return array();
     }
 }
+
